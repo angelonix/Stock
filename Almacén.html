@@ -3,32 +3,16 @@
 <head>
     <title>Almacén</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="UTF-8">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Stock+</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="main.html">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Almacén</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="confirmLogout()">Cerrar Sesi&oacute;n</a>
-                </li>
-            </ul>
-        </div>
     </nav>
 
     <div class="container mt-4">
         <h2>Productos en Almacén</h2>
-        <button class="btn btn-success" data-toggle="modal" data-target="#agregarProductoModal">Agregar Producto</button>
-        <input type="text" id="buscador" class="form-control mt-3" placeholder="Buscar productos">
+        <button class="btn btn-success" onclick="mostrarFormularioAgregar()">Agregar Producto</button>
+        <input type="text" id="buscador" class="form-control mt-3" placeholder="Buscar productos" oninput="filtrarProductos(this.value)">
         <table class="table">
             <thead>
                 <tr>
@@ -39,24 +23,11 @@
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Filas de la tabla con datos de productos -->
-                <tr>
-                    <td>1</td>
-                    <td>Nike</td>
-                    <td>Air Max</td>
-                    <td>42</td>
-                    <td>
-                        <button class="btn btn-primary">Editar</button>
-                        <button class="btn btn-danger">Eliminar</button>
-                    </td>
-                </tr>
-                <!-- Otras filas de productos -->
+            <tbody id="tablaProductos">
             </tbody>
         </table>
     </div>
 
-    <!-- Modal para agregar producto -->
     <div class="modal fade" id="agregarProductoModal" tabindex="-1" role="dialog" aria-labelledby="agregarProductoModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -67,23 +38,57 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Formulario para agregar un producto -->
                     <div class="form-group">
-                        <label for="marca">Marca:</label>
-                        <input type="text" class="form-control" id="marca">
+                        <label for="marcaForm">Marca:</label>
+                        <input type="text" class="form-control" id="marcaForm">
                     </div>
                     <div class="form-group">
-                        <label for="modelo">Modelo:</label>
-                        <input type="text" class="form-control" id="modelo">
+                        <label for="modeloForm">Modelo:</label>
+                        <input type="text" class="form-control" id="modeloForm">
                     </div>
                     <div class="form-group">
-                        <label for="talla">Talla:</label>
-                        <input type="text" class="form-control" id="talla">
+                        <label for="tallaForm">Talla:</label>
+                        <input type="text" class="form-control" id="tallaForm" oninput="validarTalla(event)">
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="agregarProducto()">Guardar Producto</button>
+                    <button type="button" class="btn btn-primary" onclick="agregarProductoDesdeFormulario()">Agregar Producto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editarProductoModal" tabindex="-1" role="dialog" aria-labelledby="editarProductoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarProductoModalLabel">Editar Producto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editarID">ID:</label>
+                        <input type="text" class="form-control" id="editarID" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="editarMarca">Marca:</label>
+                        <input type="text" class="form-control" id="editarMarca">
+                    </div>
+                    <div class="form-group">
+                        <label for="editarModelo">Modelo:</label>
+                        <input type="text" class="form-control" id="editarModelo">
+                    </div>
+                    <div class="form-group">
+                        <label for="editarTalla">Talla:</label>
+                        <input type="text" class="form-control" id="editarTalla" oninput="validarTalla(event)">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="editarProducto()">Guardar Cambios</button>
                 </div>
             </div>
         </div>
@@ -92,24 +97,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        function confirmLogout() {
-            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "Login.html";
-            }
-        }
-
-        function agregarProducto() {
-            // Obtener los valores de marca, modelo y talla del formulario
-            const marca = document.getElementById("marca").value;
-            const modelo = document.getElementById("modelo").value;
-            const talla = document.getElementById("talla").value;
-
-            // Aquí debes agregar la lógica para guardar el producto en la base de datos
-            // y actualizar la tabla con el nuevo producto
-            // También puedes limpiar los campos del formulario y cerrar el modal
-            // para indicar que el producto se ha agregado con éxito
-        }
-    </script>
+    <script src="almacen.js"></script>
 </body>
 </html>

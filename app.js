@@ -1,35 +1,19 @@
-const usuariosRegistrados = [
-    { username: 'user1', password: '123' },
-    { username: 'user2', password: '456' }
-];
+document.getElementById('login-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Obtener los valores del formulario
+    var inputUsername = document.getElementById('username').value;
+    var inputPassword = document.getElementById('password').value;
 
-const loginForm = document.getElementById("login-form");
-const registerForm = document.getElementById("register-form");
-const errorMessage = document.getElementById("error-message");
-const registrationMessage = document.getElementById("registration-message");
+    // Obtener los valores almacenados en localStorage
+    var storedUsers = JSON.parse(localStorage.getItem('users')) || {};
 
-loginForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    const usuarioEncontrado = usuariosRegistrados.find(user => user.username === username && user.password === password);
-
-    if (usuarioEncontrado) {
-        window.location.href = "main.html"; 
+    // Verificar si las credenciales coinciden
+    if (storedUsers[inputUsername] === inputPassword) {
+        // Credenciales válidas, redireccionar a la página principal
+        window.location.href = 'main.html';
     } else {
-        errorMessage.textContent = "Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.";
+        // Credenciales inválidas, mostrar mensaje de error
+        document.getElementById('error-message').textContent = 'Usuario o contraseña incorrectos';
     }
-});
-
-registerForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const newUsername = document.getElementById("new-username").value;
-    const newPassword = document.getElementById("new-password").value;
-
-    // Agrega el nuevo usuario a la lista temporal
-    usuariosRegistrados.push({ username: newUsername, password: newPassword });
-    registrationMessage.textContent = "Registro exitoso. Ahora puedes iniciar sesión.";
 });

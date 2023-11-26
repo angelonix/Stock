@@ -3,21 +3,23 @@
 <head>
     <title>Registro de Usuario</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="UTF-8">
 </head>
 <body>
     <h1>Registro de Usuario</h1>
     <form id="register-form">
-        <label for="new-username">Nuevo Usuario:</label>
+        <label for="new-username">Usuario:</label>
         <input type="text" id="new-username" required>
         <br>
-        <label for="new-password">Nueva Contraseña:</label>
+        <label for="new-password">Contraseña:</label>
         <input type="password" id="new-password" required>
         <br>
         <button type="submit">Registrar</button>
     </form>
-    <p>¿Ya tienes una cuenta? <a href="index.html">Iniciar Sesión</a></p>
+    <p>¿Ya tienes una cuenta? <a href="login.html">Iniciar Sesión</a></p>
     <p id="registration-message" class="registration-message"></p>
 
     <script src="app.js"></script>
+    <script src="registration.js"></script>
 </body>
 </html>
